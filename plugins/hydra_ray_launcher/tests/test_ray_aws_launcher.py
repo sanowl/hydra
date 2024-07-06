@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-import random
 import string
 import subprocess
 import sys
@@ -23,6 +22,7 @@ from omegaconf import OmegaConf
 from pytest import fixture, mark
 
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
+import secrets
 
 # mypy complains about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
@@ -39,7 +39,7 @@ temp_remote_wheel_dir = "/tmp/wheels/"  # nosec
 sweep_dir = "tmp_pytest_dir"  # nosec
 
 cluster_name = "IntegrationTest-" + "".join(
-    [random.choice(string.ascii_letters + string.digits) for n in range(5)]
+    [secrets.choice(string.ascii_letters + string.digits) for n in range(5)]
 )
 win_msg = "Ray doesn't support Windows."
 cur_py_version = f"{sys.version_info.major}.{sys.version_info.minor}"

@@ -2,13 +2,13 @@
 # type: ignore
 import json
 import os
-import random
 import re
 from itertools import islice
 from os.path import dirname
 from typing import List
 
 import requests
+import secrets
 
 git_repo_pattern = (
     r"((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?"
@@ -36,7 +36,7 @@ def get_available_plugin() -> List[str]:
         if x not in skip
     ]
     plugins = [p["path"] for p in ps]
-    random.shuffle(plugins)
+    secrets.SystemRandom().shuffle(plugins)
     groups_of_plugins = [",".join(w) for w in list(chunk(plugins, 4))]
     groups_of_plugins.extend(test_alone_plugins)
     return groups_of_plugins
