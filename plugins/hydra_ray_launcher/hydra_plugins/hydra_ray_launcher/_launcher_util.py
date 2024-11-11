@@ -11,6 +11,7 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf
+from security import safe_command
 
 # mypy complains about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
@@ -80,7 +81,7 @@ def launch_job_on_ray(
 
 
 def _run_command(args: Any) -> Tuple[str, str]:
-    with Popen(args=args, stdout=PIPE, stderr=PIPE) as proc:
+    with safe_command.run(Popen, args=args, stdout=PIPE, stderr=PIPE) as proc:
         log.info(f"Running command: {' '.join(args)}")
         out, err = proc.communicate()
         out_str = out.decode().strip() if out is not None else ""
