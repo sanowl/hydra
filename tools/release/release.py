@@ -10,11 +10,11 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import hydra
-import requests
 from hydra.core.config_store import ConfigStore
 from hydra.test_utils.test_utils import find_parent_dir_containing, run_python_script
 from omegaconf import II, MISSING, SI, DictConfig, OmegaConf
 from packaging.version import Version, parse
+from security import safe_requests
 
 log = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ ConfigStore.instance().store(name="config_schema", node=Config)
 @lru_cache()
 def get_metadata(package_name: str) -> DictConfig:
     url = f"https://pypi.org/pypi/{package_name}/json"
-    with requests.get(url, timeout=10) as response:
+    with safe_requests.get(url, timeout=10) as response:
         ret = OmegaConf.create(response.content.decode("utf-8"))
     response.close()
     assert isinstance(ret, DictConfig)
