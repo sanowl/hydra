@@ -24,6 +24,7 @@ from hydra._internal.utils import detect_task_name
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.utils import JobReturn, validate_config_path
 from hydra.types import TaskFunction
+from security import safe_command
 
 
 @contextmanager
@@ -344,7 +345,7 @@ if __name__ == "__main__":
 
 def run_with_error(cmd: Any, env: Any = None) -> str:
     cmd = [sys.executable, "-Werror"] + cmd
-    with Popen(cmd, stdout=PIPE, stderr=PIPE, env=env) as p:
+    with safe_command.run(Popen, cmd, stdout=PIPE, stderr=PIPE, env=env) as p:
         _stdout, stderr = p.communicate()
         err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
         assert p.returncode != 0
@@ -373,8 +374,7 @@ def run_process(
     timeout: Optional[float] = None,
 ) -> Tuple[str, str]:
     try:
-        process = subprocess.Popen(
-            args=cmd,
+        process = safe_command.run(subprocess.Popen, args=cmd,
             shell=False,
             env=env,
             stdout=subprocess.PIPE,
