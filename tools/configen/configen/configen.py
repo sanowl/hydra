@@ -42,7 +42,7 @@ jinja_env = Environment(
     loader=PackageLoader("configen", "templates"),
     keep_trailing_newline=True,
     trim_blocks=True,
-)
+autoescape=True)
 jinja_env.tests["empty"] = lambda x: x == inspect.Signature.empty
 
 
