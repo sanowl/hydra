@@ -4,7 +4,6 @@ import fnmatch
 from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
-from random import shuffle
 from textwrap import dedent
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
@@ -17,6 +16,7 @@ from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_charac
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
+import secrets
 
 
 class Quote(Enum):
@@ -338,13 +338,13 @@ class Override:
         elif isinstance(self._value, ChoiceSweep):
             if self._value.shuffle:
                 lst = copy(self._value.list)
-                shuffle(lst)
+                secrets.SystemRandom().shuffle(lst)
             else:
                 lst = self._value.list
         elif isinstance(self._value, RangeSweep):
             if self._value.shuffle:
                 lst = list(self._value.range())
-                shuffle(lst)
+                secrets.SystemRandom().shuffle(lst)
                 lst = iter(lst)
             else:
                 lst = self._value.range()

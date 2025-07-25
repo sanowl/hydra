@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import builtins
-import random
 from copy import copy
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -14,6 +13,7 @@ from hydra.core.override_parser.types import (
     RangeSweep,
     Sweep,
 )
+import secrets
 
 ElementType = Union[str, int, bool, float, List[Any], Dict[str, Any]]
 
@@ -260,7 +260,7 @@ def shuffle(
             return sweep
         if isinstance(arg, builtins.list):
             lst = copy(arg)
-            random.shuffle(lst)
+            secrets.SystemRandom().shuffle(lst)
             return lst
         else:
             return [arg]
